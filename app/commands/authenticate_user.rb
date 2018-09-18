@@ -1,21 +1,22 @@
 class AuthenticateUser
   prepend SimpleCommand
 
-  def initialize(email, password)
-    @email = email
+  def initialize(username, password)
+    @username = username
     @password = password
   end
 
   def call
-    JsonWebToken.encode(user_id: user.id) if user
+    # Instagram.new(@email, @password)
+    JsonWebToken.encode({username: user.username, user_id: user.id}) if user
   end
 
   private
 
-  attr_accessor :email, :password
+  attr_accessor :username, :password
 
   def user
-    user = User.find_by_email(email)
+    user = User.find_by(username:username)
     return user if user && user.authenticate(password)
 
     errors.add :user_authentication, 'invalid credentials'
